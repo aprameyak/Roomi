@@ -21,17 +21,12 @@ Whether you're looking for a shared flat near campus or want to rent out an extr
 
 **Frontend:**  
 - [React Native](https://reactnative.dev/)  
-- [Expo](https://expo.dev/) (optional)  
+- [Expo](https://expo.dev/) 
 - [React Navigation](https://reactnavigation.org/)  
-- [Redux Toolkit](https://redux-toolkit.js.org/) or Context API (for state management)
+- [Redux Toolkit](https://redux-toolkit.js.org/) 
 
 **Backend:**  
 - [Firebase Authentication](https://firebase.google.com/docs/auth)  
 - [Firebase Firestore](https://firebase.google.com/docs/firestore)  
 - [Firebase Storage](https://firebase.google.com/docs/storage)  
-- [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging) (for notifications)
-
----
-
-## Project Structure
-
+- [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging) 
