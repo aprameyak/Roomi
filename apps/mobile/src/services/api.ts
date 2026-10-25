@@ -1,10 +1,6 @@
-// API Service for Roomi App
-// This service handles all API calls to the backend
-
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'http://localhost:5001/hackru/us-central1';
 
 export const apiService = {
-  // User management
   async createUser(userId: string, userData: any) {
     try {
       const response = await fetch(`${API_BASE_URL}/createUser`, {
@@ -29,7 +25,6 @@ export const apiService = {
     }
   },
 
-  // Swiping functionality
   async likeUser(currentUserId: string, targetUserId: string) {
     try {
       const response = await fetch(`${API_BASE_URL}/likeUser`, {
@@ -78,7 +73,6 @@ export const apiService = {
     }
   },
 
-  // Get potential matches
   async getCandidates(userId: string) {
     try {
       const response = await fetch(`${API_BASE_URL}/getCandidates?userId=${userId}`);
@@ -94,7 +88,6 @@ export const apiService = {
     }
   },
 
-  // Get user matches
   async getMatches(userId: string) {
     try {
       const response = await fetch(`${API_BASE_URL}/getMatches?userId=${userId}`);
@@ -110,7 +103,6 @@ export const apiService = {
     }
   },
 
-  // University verification
   async requestUniversityVerification(userId: string, email: string, university: string) {
     try {
       const response = await fetch(`${API_BASE_URL}/requestUniversityVerification`, {
@@ -136,7 +128,6 @@ export const apiService = {
     }
   },
 
-  // Update user profile
   async updateProfile(userId: string, profileData: any) {
     try {
       const response = await fetch(`${API_BASE_URL}/updateProfile`, {

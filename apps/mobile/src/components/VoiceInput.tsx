@@ -16,7 +16,6 @@ export function VoiceInput({ onTranscript, placeholder = "Tap to speak your pref
   const [isAvailable, setIsAvailable] = useState(false);
 
   useEffect(() => {
-    // Initialize voice recognition
     Voice.onSpeechStart = () => {
       setIsListening(true);
     };
@@ -39,7 +38,6 @@ export function VoiceInput({ onTranscript, placeholder = "Tap to speak your pref
       Alert.alert('Voice Error', 'Sorry, I couldn\'t understand. Please try again.');
     };
 
-    // Check if voice recognition is available
     Voice.isAvailable().then((available: boolean) => setIsAvailable(available));
 
     return () => {

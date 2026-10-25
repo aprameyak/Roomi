@@ -24,15 +24,11 @@ export function OnboardingScreen({ navigation }: Readonly<NativeStackScreenProps
     const preferences = NLPService.extractPreferences(text);
     setExtractedPreferences(preferences);
     
-    // Auto-fill form fields based on extracted data
     if (preferences.budget) {
-      // You could set a budget field if you have one
     }
     if (preferences.age) {
-      // You could set an age field if you have one
     }
     if (preferences.location) {
-      // You could set a location field if you have one
     }
   };
 

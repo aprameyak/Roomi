@@ -1,6 +1,3 @@
-// NLP Service for processing voice input and extracting user preferences
-// This service uses pattern matching and keyword extraction to understand user preferences
-
 interface ExtractedPreferences {
   budget?: number;
   location?: string;
@@ -19,7 +16,6 @@ interface ExtractedPreferences {
 }
 
 export class NLPService {
-  // Budget extraction patterns
   private static budgetPatterns = [
     /(\$?\d+(?:,\d{3})*(?:\.\d{2})?)\s*(?:per\s*month|monthly|a\s*month)/gi,
     /budget\s*(?:of\s*)?(\$?\d+(?:,\d{3})*(?:\.\d{2})?)/gi,
@@ -27,7 +23,6 @@ export class NLPService {
     /around\s*(\$?\d+(?:,\d{3})*(?:\.\d{2})?)/gi,
   ];
 
-  // Location extraction patterns
   private static locationPatterns = [
     /(?:near|close\s*to|around)\s*([A-Za-z\s]+(?:university|college|school))/gi,
     /(?:at|in)\s*([A-Za-z\s]+(?:university|college|school))/gi,
@@ -35,7 +30,6 @@ export class NLPService {
     /(?:near|in|at)\s*([A-Za-z\s]+(?:campus|downtown|city))/gi,
   ];
 
-  // Lifestyle preference patterns
   private static lifestylePatterns = {
     cleanliness: [
       /(?:very\s*)?clean/gi,
@@ -90,21 +84,18 @@ export class NLPService {
     ],
   };
 
-  // Age extraction patterns
   private static agePatterns = [
     /(\d{1,2})\s*(?:years?\s*old|yo)/gi,
     /age\s*(\d{1,2})/gi,
     /(\d{1,2})\s*(?:years?)/gi,
   ];
 
-  // University extraction patterns
   private static universityPatterns = [
     /(?:at|in|from)\s*([A-Za-z\s]+(?:university|college|school))/gi,
     /([A-Za-z\s]+(?:university|college|school))/gi,
     /(?:studying|student)\s*(?:at|in)\s*([A-Za-z\s]+)/gi,
   ];
 
-  // Interest extraction patterns
   private static interestKeywords = [
     'gaming', 'video games', 'sports', 'fitness', 'gym', 'running', 'biking',
     'music', 'guitar', 'piano', 'singing', 'art', 'painting', 'drawing',
@@ -118,37 +109,31 @@ export class NLPService {
       lifestylePreferences: {},
     };
 
-    // Extract budget
     const budget = this.extractBudget(text);
     if (budget) {
       preferences.budget = budget;
     }
 
-    // Extract location
     const location = this.extractLocation(text);
     if (location) {
       preferences.location = location;
     }
 
-    // Extract age
     const age = this.extractAge(text);
     if (age) {
       preferences.age = age;
     }
 
-    // Extract university
     const university = this.extractUniversity(text);
     if (university) {
       preferences.university = university;
     }
 
-    // Extract lifestyle preferences
     const lifestylePrefs = this.extractLifestylePreferences(text);
     if (Object.keys(lifestylePrefs).length > 0) {
       preferences.lifestylePreferences = lifestylePrefs;
     }
 
-    // Extract interests
     const interests = this.extractInterests(text);
     if (interests.length > 0) {
       preferences.interests = interests;
@@ -213,7 +198,6 @@ export class NLPService {
         if (match) {
           const matchedText = match[0].toLowerCase();
           
-          // Determine preference value based on context
           if (matchedText.includes('no ') || matchedText.includes('not ')) {
             preferences[key] = 'none';
           } else if (matchedText.includes('very ')) {
@@ -246,7 +230,6 @@ export class NLPService {
     return interests;
   }
 
-  // Generate a summary of extracted preferences
   static generateSummary(preferences: ExtractedPreferences): string {
     const parts: string[] = [];
 

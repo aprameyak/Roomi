@@ -80,7 +80,6 @@ export function ProfileScreen() {
     const preferences = NLPService.extractPreferences(text);
     setExtractedPreferences(preferences);
     
-    // Auto-update profile based on extracted data
     if (preferences.budget) {
       setProfile(prev => ({ ...prev, budget: preferences.budget }));
     }

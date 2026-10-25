@@ -29,7 +29,6 @@ export function SwipeScreen() {
 
   const loadCandidates = async () => {
     try {
-      // Mock data for now since API might not have users yet
       const mockCandidates: Candidate[] = [
         {
           id: '1',
