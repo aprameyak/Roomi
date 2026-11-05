@@ -1,8 +1,9 @@
-import * as admin from 'firebase-admin';
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import * as functions from 'firebase-functions';
 
-admin.initializeApp();
-const db = admin.firestore();
+initializeApp();
+const db = getFirestore();
 
 export const health = functions.https.onRequest((_req, res) => {
   res.status(200).json({ status: 'ok' });
@@ -47,7 +48,7 @@ export const createMatch = functions.https.onRequest(async (req, res) => {
       res.status(400).json({ error: 'userA and userB required' });
       return;
     }
-    const ref = await db.collection('matches').add({ userA, userB, score, status: status ?? 'pending', createdAt: admin.firestore.FieldValue.serverTimestamp() });
+    const ref = await db.collection('matches').add({ userA, userB, score, status: status ?? 'pending', createdAt: FieldValue.serverTimestamp() });
     res.status(201).json({ id: ref.id });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
@@ -65,9 +66,9 @@ export const postMessage = functions.https.onRequest(async (req, res) => {
       res.status(400).json({ error: 'conversationId, sender, text required' });
       return;
     }
-    const message = { sender, text, timestamp: timestamp ?? admin.firestore.FieldValue.serverTimestamp() };
+    const message = { sender, text, timestamp: timestamp ?? FieldValue.serverTimestamp() };
     await db.collection('messages').doc(conversationId).set(
-      { messages: admin.firestore.FieldValue.arrayUnion(message) },
+      { messages: FieldValue.arrayUnion(message) },
       { merge: true }
     );
     res.status(201).json({ ok: true });
@@ -110,7 +111,7 @@ export const requestUniversityVerification = functions.https.onRequest(async (re
       domain,
       eduDomain: eduLike,
       university: university ?? null,
-      requestedAt: admin.firestore.FieldValue.serverTimestamp(),
+      requestedAt: FieldValue.serverTimestamp(),
     };
 
     await db.collection('users').doc(userId).set({ verification }, { merge: true });
@@ -143,7 +144,7 @@ export const confirmUniversityVerification = functions.https.onRequest(async (re
         verification: {
           ...verification,
           status: 'verified',
-          verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+          verifiedAt: FieldValue.serverTimestamp(),
         },
         badges: {
           universityVerified: true,
@@ -175,7 +176,7 @@ export const submitStudentId = functions.https.onRequest(async (req, res) => {
         verification: {
           studentId: {
             storagePath,
-            submittedAt: admin.firestore.FieldValue.serverTimestamp(),
+            submittedAt: FieldValue.serverTimestamp(),
             status: 'under_review',
           },
         },
@@ -288,13 +289,13 @@ export const likeUser = functions.https.onRequest(async (req, res) => {
       res.status(400).json({ error: 'fromUserId and toUserId required' });
       return;
     }
-    await db.collection('likes').add({ fromUserId, toUserId, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+    await db.collection('likes').add({ fromUserId, toUserId, createdAt: FieldValue.serverTimestamp() });
 
     if (await hasReciprocalLike(fromUserId, toUserId)) {
       const aSnap = await db.collection('users').doc(fromUserId).get();
       const bSnap = await db.collection('users').doc(toUserId).get();
       const score = computeCompatibility(aSnap.data(), bSnap.data());
-      await db.collection('matches').add({ userA: fromUserId, userB: toUserId, score, status: 'matched', createdAt: admin.firestore.FieldValue.serverTimestamp() });
+      await db.collection('matches').add({ userA: fromUserId, userB: toUserId, score, status: 'matched', createdAt: FieldValue.serverTimestamp() });
       res.status(200).json({ matched: true, score });
       return;
     }
@@ -316,7 +317,7 @@ export const passUser = functions.https.onRequest(async (req, res) => {
       res.status(400).json({ error: 'fromUserId and toUserId required' });
       return;
     }
-    await db.collection('passes').add({ fromUserId, toUserId, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+    await db.collection('passes').add({ fromUserId, toUserId, createdAt: FieldValue.serverTimestamp() });
     res.status(200).json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: (err as Error).message });
