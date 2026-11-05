@@ -34,10 +34,11 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.passUser = exports.likeUser = exports.getTopCandidates = exports.submitStudentId = exports.confirmUniversityVerification = exports.requestUniversityVerification = exports.postMessage = exports.createMatch = exports.listRooms = exports.createUser = exports.health = void 0;
-const admin = __importStar(require("firebase-admin"));
+const app_1 = require("firebase-admin/app");
+const firestore_1 = require("firebase-admin/firestore");
 const functions = __importStar(require("firebase-functions"));
-admin.initializeApp();
-const db = admin.firestore();
+(0, app_1.initializeApp)();
+const db = (0, firestore_1.getFirestore)();
 exports.health = functions.https.onRequest((_req, res) => {
     res.status(200).json({ status: 'ok' });
 });
@@ -80,7 +81,7 @@ exports.createMatch = functions.https.onRequest(async (req, res) => {
             res.status(400).json({ error: 'userA and userB required' });
             return;
         }
-        const ref = await db.collection('matches').add({ userA, userB, score, status: status ?? 'pending', createdAt: admin.firestore.FieldValue.serverTimestamp() });
+        const ref = await db.collection('matches').add({ userA, userB, score, status: status ?? 'pending', createdAt: firestore_1.FieldValue.serverTimestamp() });
         res.status(201).json({ id: ref.id });
     }
     catch (err) {
@@ -98,8 +99,8 @@ exports.postMessage = functions.https.onRequest(async (req, res) => {
             res.status(400).json({ error: 'conversationId, sender, text required' });
             return;
         }
-        const message = { sender, text, timestamp: timestamp ?? admin.firestore.FieldValue.serverTimestamp() };
-        await db.collection('messages').doc(conversationId).set({ messages: admin.firestore.FieldValue.arrayUnion(message) }, { merge: true });
+        const message = { sender, text, timestamp: timestamp ?? firestore_1.FieldValue.serverTimestamp() };
+        await db.collection('messages').doc(conversationId).set({ messages: firestore_1.FieldValue.arrayUnion(message) }, { merge: true });
         res.status(201).json({ ok: true });
     }
     catch (err) {
@@ -138,7 +139,7 @@ exports.requestUniversityVerification = functions.https.onRequest(async (req, re
             domain,
             eduDomain: eduLike,
             university: university ?? null,
-            requestedAt: admin.firestore.FieldValue.serverTimestamp(),
+            requestedAt: firestore_1.FieldValue.serverTimestamp(),
         };
         await db.collection('users').doc(userId).set({ verification }, { merge: true });
         res.status(200).json({ ok: true, eduDomain: eduLike });
@@ -168,7 +169,7 @@ exports.confirmUniversityVerification = functions.https.onRequest(async (req, re
             verification: {
                 ...verification,
                 status: 'verified',
-                verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+                verifiedAt: firestore_1.FieldValue.serverTimestamp(),
             },
             badges: {
                 universityVerified: true,
@@ -195,7 +196,7 @@ exports.submitStudentId = functions.https.onRequest(async (req, res) => {
             verification: {
                 studentId: {
                     storagePath,
-                    submittedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    submittedAt: firestore_1.FieldValue.serverTimestamp(),
                     status: 'under_review',
                 },
             },
@@ -297,12 +298,12 @@ exports.likeUser = functions.https.onRequest(async (req, res) => {
             res.status(400).json({ error: 'fromUserId and toUserId required' });
             return;
         }
-        await db.collection('likes').add({ fromUserId, toUserId, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+        await db.collection('likes').add({ fromUserId, toUserId, createdAt: firestore_1.FieldValue.serverTimestamp() });
         if (await hasReciprocalLike(fromUserId, toUserId)) {
             const aSnap = await db.collection('users').doc(fromUserId).get();
             const bSnap = await db.collection('users').doc(toUserId).get();
             const score = computeCompatibility(aSnap.data(), bSnap.data());
-            await db.collection('matches').add({ userA: fromUserId, userB: toUserId, score, status: 'matched', createdAt: admin.firestore.FieldValue.serverTimestamp() });
+            await db.collection('matches').add({ userA: fromUserId, userB: toUserId, score, status: 'matched', createdAt: firestore_1.FieldValue.serverTimestamp() });
             res.status(200).json({ matched: true, score });
             return;
         }
@@ -323,7 +324,7 @@ exports.passUser = functions.https.onRequest(async (req, res) => {
             res.status(400).json({ error: 'fromUserId and toUserId required' });
             return;
         }
-        await db.collection('passes').add({ fromUserId, toUserId, createdAt: admin.firestore.FieldValue.serverTimestamp() });
+        await db.collection('passes').add({ fromUserId, toUserId, createdAt: firestore_1.FieldValue.serverTimestamp() });
         res.status(200).json({ ok: true });
     }
     catch (err) {
